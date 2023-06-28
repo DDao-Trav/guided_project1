@@ -31,19 +31,20 @@ async function getFilm(id) {
 
   renderFilm(film);
 }
+
 async function fetchFilm(id) {
   const filmUrl = `${baseUrl}/films/${id}`;
   return await fetch(filmUrl).then((res) => res.json());
 }
 
-async function fetchCharacters(id) {
-  const url = `${baseUrl}/films/${id}/characters`;
+async function fetchCharacters(film) {
+  const url = `${baseUrl}/films/${film?.id}/characters`;
   const characters = await fetch(url).then((res) => res.json());
   return characters;
 }
 
-async function fetchPlanets(id) {
-  const url = `${baseUrl}/films/${id}/planets`;
+async function fetchPlanets(film) {
+  const url = `${baseUrl}/films/${film?.id}/planets`;
   const planets = await fetch(url).then((res) => res.json());
   return planets;
 }
@@ -51,7 +52,7 @@ async function fetchPlanets(id) {
 const renderFilm = (film) => {
   document.title = `SWAPI - ${film?.title}`; // Just to make the browser tab say their name
   nameH1.textContent = film?.title;
-  releaseDateSpan.textContent = film?.date;
+  releaseDateSpan.textContent = film?.release_date;
   prodSpan.textContent = film?.producer;
   dirSpan.textContent = film?.director;
   planetSpan.innerHTML = `<a href="/planet.html?id=${character?.homeworld.id}">${character?.homeworld.name}</a>`;
@@ -59,5 +60,5 @@ const renderFilm = (film) => {
     (character) =>
       `<li><a href="/character.html?id=${character.id}">${character.title}</li>`
   );
-  filmsUl.innerHTML = filmsLis.join("");
+  charUl.innerHTML = charLis.join("");
 };
