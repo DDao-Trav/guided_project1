@@ -2,8 +2,8 @@ let nameH1;
 let releaseDateSpan;
 let prodSpan;
 let dirSpan;
-let charSec;
-let planetSec;
+let charUl;
+let planetUl;
 
 const baseUrl = `https://swapi2.azurewebsites.net/api`;
 
@@ -12,7 +12,7 @@ addEventListener("DOMContentLoaded", () => {
   releaseDateSpan = document.querySelector("span#date");
   prodSpan = document.querySelector("span#producer");
   dirSpan = document.querySelector("span#director");
-  planetSpan = document.querySelector("span#planet");
+  planetUl = document.querySelector("#planets>ul");
   charUl = document.querySelector("#characters>ul");
   const sp = new URLSearchParams(window.location.search);
   const id = sp.get("id");
@@ -20,16 +20,15 @@ addEventListener("DOMContentLoaded", () => {
 });
 
 async function getFilm(id) {
-  let film;
+  
   try {
-    film = await fetchFilm(id);
+    const film = await fetchFilm(id);
     film.characters = await fetchCharacters(film);
     film.planets = await fetchPlanets(film);
+    renderFilm(film);
   } catch (err) {
     console.log(`Error reading film ${id} data.`, err.message);
   }
-
-  renderFilm(film);
 }
 
 async function fetchFilm(id) {
@@ -55,10 +54,12 @@ const renderFilm = (film) => {
   releaseDateSpan.textContent = film?.release_date;
   prodSpan.textContent = film?.producer;
   dirSpan.textContent = film?.director;
-  const planetLis = film?.planets?.map(planet => `<li><a href="/planet.html?id=${planet.id}">${planet.name}</a></li>`)
-  const charLis = film?.characters?.map(
-    (character) =>
-      `<li><a href="/character.html?id=${character.id}">${character.name}</li>`
-  );
+
+  const charLis = film?.characters?.map(character =>
+      `<li><a href="/character.html?id=${character.id}">${character.name}</a></li>`);
+      
+  const planetLis = film?.planets?.map(planet => 
+    `<li><a href="/planet.html?id=${planet.id}">${planet.name}</a></li>`);
   charUl.innerHTML = charLis.join("");
+  planetUl.innerHTML = planetLis.join("");
 };
